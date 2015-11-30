@@ -12,18 +12,22 @@ def understand_data(input_list):
 		if choice==1:
 			print data.head(10)
 			#print pd.unique(data.TripType)
-			print 'Count of unique product Upc', int(pd.DataFrame(pd.unique(data.Upc)).count())
-			print 'Count of unique product department descriptions', int(pd.DataFrame(pd.unique(data.DepartmentDescription)).count())
+			#print 'Count of unique product Upc', int(pd.DataFrame(pd.unique(data.Upc)).count())
+			#print 'Count of unique product department descriptions', int(pd.DataFrame(pd.unique(data.DepartmentDescription)).count())
+			print pd.unique(data.Weekday)
+			print pd.unique(data.Weekday_num)
 		elif choice ==2:
-			share_of_trip_type = pd.DataFrame(data.groupby(['TripType'],axis= 0)['VisitNumber'].count()*100/len(data))
+			#share_of_trip_type = pd.DataFrame(data.groupby(['TripType'],axis= 0)['VisitNumber'].count()*100/len(data))
+			#share_of_trip_type = pd.DataFrame(data.groupby(['TripType'],axis= 0)['VisitNumber'].count())
+			share_of_trip_type = pd.DataFrame(data.groupby(['TripType'],axis= 0)['VisitNumber'].nunique())
 			print share_of_trip_type
 
-			products_departments = pd.DataFrame(data.groupby(['DepartmentDescription'],axis= 0)['Upc'].nunique())  #http://stackoverflow.com/questions/15411158/pandas-countdistinct-equivalent
+			#products_departments = pd.DataFrame(data.groupby(['DepartmentDescription'],axis= 0)['Upc'].nunique())   #1
+			#products_departments = pd.DataFrame(data.groupby(['DepartmentDescription'],axis= 0)['Upc'].count())
+			#print products_departments
 
-			print products_departments
 		elif choice==3:
-			#http://pandas.pydata.org/pandas-docs/stable/reshaping.html
-			# department_triptype_pivot = pd.pivot_table(data, values='VisitNumber', index='DepartmentDescription', columns='TripType', aggfunc=np.size)
+			# department_triptype_pivot = pd.pivot_table(data, values='VisitNumber', index='DepartmentDescription', columns='TripType', aggfunc=np.size)    #2
 			# print department_triptype_pivot
 
 			department_finelinenum_pivot = pd.pivot_table(data, values='VisitNumber', index='FinelineNumber', columns='DepartmentDescription', aggfunc=np.size)
@@ -49,12 +53,19 @@ def understand_data(input_list):
 
 		elif choice==20:
 			#(pd.DataFrame(pd.unique(data.TripType))).to_csv('Unique_trip_types.csv',sep = ',',index = False)
-			#share_of_trip_type.to_csv('TripType_percentage_share.csv',sep = ',')
+			share_of_trip_type.to_csv('TripType_visitnumber_unique.csv',sep = ',')
 			#products_departments.to_csv('Unique products per department.csv',sep = ',')
 			#department_triptype_pivot.to_csv('DepartmentDescription trip Type visit number frequency pivot table.csv',sep=',')
 			#department_finelinenum_pivot.to_csv('DepartmentDescription finelinenumber visit number frequency pivot table.csv',sep=',')
 			#department_weekday_pivot.to_csv('DepartmentDescription Weekday visit number frequency pivot table.csv',sep=',')
-			Weekday_trip_type_pivot.to_csv('TripType Weekday visit number frequency pivot table.csv',sep=',')
+			#Weekday_trip_type_pivot.to_csv('TripType Weekday visit number frequency pivot table.csv',sep=',')
 
 
 understand_data([1])
+
+
+
+
+#References
+#1 - http://stackoverflow.com/questions/15411158/pandas-countdistinct-equivalent
+#2 - http://pandas.pydata.org/pandas-docs/stable/reshaping.html
