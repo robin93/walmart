@@ -10,13 +10,14 @@ data = pd.read_csv(os.path.join(cwd,'modified_input_data.csv'))
 def understand_data(input_list):
 	for choice in input_list:
 		if choice==1:
-			print data.head(10)
+			print data.head(20)
 			#print pd.unique(data.TripType)
 			#print 'Count of unique product Upc', int(pd.DataFrame(pd.unique(data.Upc)).count())
 			#print 'Count of unique product department descriptions', int(pd.DataFrame(pd.unique(data.DepartmentDescription)).count())
 			print pd.unique(data.Weekday)
 			print pd.unique(data.Weekday_num)
-		elif choice ==2:
+
+		elif choice ==2:   #group by tables
 			#share_of_trip_type = pd.DataFrame(data.groupby(['TripType'],axis= 0)['VisitNumber'].count()*100/len(data))
 			#share_of_trip_type = pd.DataFrame(data.groupby(['TripType'],axis= 0)['VisitNumber'].count())
 			share_of_trip_type = pd.DataFrame(data.groupby(['TripType'],axis= 0)['VisitNumber'].nunique())
@@ -31,7 +32,7 @@ def understand_data(input_list):
 			#products_departments = pd.DataFrame(data.groupby(['DepartmentDescription'],axis= 0)['Upc'].count())
 			#print products_departments
 
-		elif choice==3:
+		elif choice==3:    #pivot tables
 			# department_triptype_pivot = pd.pivot_table(data, values='VisitNumber', index='DepartmentDescription', columns='TripType', aggfunc=np.size)    #2
 			# print department_triptype_pivot
 
@@ -44,8 +45,12 @@ def understand_data(input_list):
 			# Weekday_trip_type_pivot = pd.pivot_table(data, values='VisitNumber', index='TripType', columns='Weekday', aggfunc=np.size)
 			# print Weekday_trip_type_pivot
 
-			share_of_trip_type_weekday_weekend = pd.pivot_table(data, values='VisitNumber',index='TripType', columns='Weekend_Weekday', aggfunc=pd.Series.nunique)
-			print share_of_trip_type_weekday_weekend
+			# share_of_trip_type_weekday_weekend = pd.pivot_table(data, values='VisitNumber',index='TripType', columns='Weekend_Weekday', aggfunc=pd.Series.nunique)
+			# print share_of_trip_type_weekday_weekend
+
+			visit_department_distribution = pd.pivot_table(data, values='ScanCount',index=['VisitNumber','TripType','Weekday'], columns='DepartmentDescription', aggfunc=np.sum,fill_value = 0)
+			print visit_department_distribution
+
 
 		elif choice==10:
 			#http://stackoverflow.com/questions/21654635/scatter-plots-in-pandas-pyplot-how-to-plot-by-category
@@ -62,12 +67,13 @@ def understand_data(input_list):
 		elif choice==20:
 			#(pd.DataFrame(pd.unique(data.TripType))).to_csv('Unique_trip_types.csv',sep = ',',index = False)
 			#share_of_trip_type.to_csv('TripType_visitnumber_unique.csv',sep = ',')
-			share_of_trip_type_weekday_weekend.to_csv('TripType_weekday_weekend_visitnumber_unique.csv',sep=',')
+			#share_of_trip_type_weekday_weekend.to_csv('TripType_weekday_weekend_visitnumber_unique.csv',sep=',')
 			#products_departments.to_csv('Unique products per department.csv',sep = ',')
 			#department_triptype_pivot.to_csv('DepartmentDescription trip Type visit number frequency pivot table.csv',sep=',')
 			#department_finelinenum_pivot.to_csv('DepartmentDescription finelinenumber visit number frequency pivot table.csv',sep=',')
 			#department_weekday_pivot.to_csv('DepartmentDescription Weekday visit number frequency pivot table.csv',sep=',')
 			#Weekday_trip_type_pivot.to_csv('TripType Weekday visit number frequency pivot table.csv',sep=',')
+			visit_department_distribution.to_csv('Visit_department_scancount_sum.csv',sep=',')
 
 
 understand_data([3,20])
