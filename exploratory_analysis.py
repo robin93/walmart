@@ -11,17 +11,18 @@ def understand_data(input_list):
 	for choice in input_list:
 		if choice==1:
 			print data.head(20)
-			#print pd.unique(data.TripType)
-			#print 'Count of unique product Upc', int(pd.DataFrame(pd.unique(data.Upc)).count())
-			#print 'Count of unique product department descriptions', int(pd.DataFrame(pd.unique(data.DepartmentDescription)).count())
+			print pd.unique(data.TripType)
+			print 'Count of unique product Upc', int(pd.DataFrame(pd.unique(data.Upc)).count())
+			print 'Count of unique product department descriptions', int(pd.DataFrame(pd.unique(data.DepartmentDescription)).count())
+			print 'Count of unique fineline number',int(pd.DataFrame(pd.unique(data.FinelineNumber)).count())
 			print pd.unique(data.Weekday)
 			print pd.unique(data.Weekday_num)
 
 		elif choice ==2:   #group by tables
-			#share_of_trip_type = pd.DataFrame(data.groupby(['TripType'],axis= 0)['VisitNumber'].count()*100/len(data))
-			#share_of_trip_type = pd.DataFrame(data.groupby(['TripType'],axis= 0)['VisitNumber'].count())
-			share_of_trip_type = pd.DataFrame(data.groupby(['TripType'],axis= 0)['VisitNumber'].nunique())
-			print share_of_trip_type
+			# #share_of_trip_type = pd.DataFrame(data.groupby(['TripType'],axis= 0)['VisitNumber'].count()*100/len(data))
+			# #share_of_trip_type = pd.DataFrame(data.groupby(['TripType'],axis= 0)['VisitNumber'].count())
+			# share_of_trip_type = pd.DataFrame(data.groupby(['TripType'],axis= 0)['VisitNumber'].nunique())
+			# print share_of_trip_type
 
 			# share_of_trip_type_weekday_weekend = pd.DataFrame(data.groupby(['TripType','Weekend_Weekday'],axis= 0)['VisitNumber'].nunique())
 			# print share_of_trip_type_weekday_weekend
@@ -31,6 +32,14 @@ def understand_data(input_list):
 			#products_departments = pd.DataFrame(data.groupby(['DepartmentDescription'],axis= 0)['Upc'].nunique())   #1
 			#products_departments = pd.DataFrame(data.groupby(['DepartmentDescription'],axis= 0)['Upc'].count())
 			#print products_departments
+
+			# products_in_departments = pd.DataFrame(data.groupby(['DepartmentDescription'],axis= 0)['Upc'].nunique())   #1
+			# #products_departments = pd.DataFrame(data.groupby(['DepartmentDescription'],axis= 0)['Upc'].count())
+			# print products_in_departments
+
+			departments_per_product = pd.DataFrame(data.groupby(['Upc'],axis= 0)['DepartmentDescription'].nunique())
+			print departments_per_product.head(10)
+			print pd.unique(departments_per_product.DepartmentDescription) 
 
 		elif choice==3:    #pivot tables
 			# department_triptype_pivot = pd.pivot_table(data, values='VisitNumber', index='DepartmentDescription', columns='TripType', aggfunc=np.size)    #2
@@ -48,8 +57,13 @@ def understand_data(input_list):
 			# share_of_trip_type_weekday_weekend = pd.pivot_table(data, values='VisitNumber',index='TripType', columns='Weekend_Weekday', aggfunc=pd.Series.nunique)
 			# print share_of_trip_type_weekday_weekend
 
-			visit_department_distribution = pd.pivot_table(data, values='ScanCount',index=['VisitNumber','TripType','Weekday'], columns='DepartmentDescription', aggfunc=np.sum,fill_value = 0)
-			print visit_department_distribution
+			# visit_department_distribution = pd.pivot_table(data, values='ScanCount',index=['VisitNumber','TripType','Weekday'], columns='DepartmentDescription', aggfunc=np.sum,fill_value = 0)
+			# print visit_department_distribution
+
+			product_department_overlap_check = pd.pivot_table(data, values='VisitNumber',index='Upc',columns='DepartmentDescription', aggfunc=pd.Series.nunique,fill_value = 0)
+			print product_department_overlap_check
+
+
 
 
 		elif choice==10:
@@ -57,7 +71,7 @@ def understand_data(input_list):
 			groups = data.groupby('TripType')
 			fig, ax = plt.subplots()
 			for name, group in groups:
-				#print name
+				#print nam
 				#print group.DepartmentDescription
 				ax.plot(group.ScanCount, group.Weekday_num, marker='o', linestyle='', ms=5, label=name)
 				ax.legend()
@@ -76,7 +90,7 @@ def understand_data(input_list):
 			visit_department_distribution.to_csv('Visit_department_scancount_sum.csv',sep=',')
 
 
-understand_data([3,20])
+understand_data([2])
 
 
 
